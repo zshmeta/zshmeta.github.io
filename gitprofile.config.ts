@@ -49,8 +49,8 @@ const CONFIG = {
         {
           title: 'Olympique de Marseille VSCode Theme',
           description: "A VSCode theme inspired by the colors of Olympique de Marseille football club.",
-          imageUrl: 'https://opengraph.githubassets.com/1/zshmeta/olympique-de-marseille'
-          link: 'https://marketplace.visualstudio.com/items?itemName=zshmeta.olympique-de-marseille-away'
+          imageUrl: 'https://opengraph.githubassets.com/1/zshmeta/olympique-de-marseille',
+          link: 'https://marketplace.visualstudio.com/items?itemName=zshmeta.olympique-de-marseille-away',
         },
         {
           title: 'Price Crawl',

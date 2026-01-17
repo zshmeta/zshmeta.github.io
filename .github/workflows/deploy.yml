@@ -3,7 +3,6 @@ name: Deploy
 on:
   push:
     branches: [main]
-
   workflow_dispatch:
 
 permissions:
@@ -26,42 +25,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-          cache: 'npm'
+          cache: npm
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Install dependencies (retry)
-        run: |
-          set -euo pipefail
-          for i in 1 2 3; do
-            echo "npm ci attempt ${i}/3"
-            if npm ci; then
-              exit 0
-            fi
-            echo "npm ci failed (attempt ${i})."
-            if [ "$i" -lt 3 ]; then
-              sleep $((i * 10))
-            fi
-          done
-          exit 1
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Build with vite (retry)
-        run: |
-          set -euo pipefail
-          for i in 1 2; do
-            echo "npm run build attempt ${i}/2"
-            if npm run build; then
-              exit 0
-            fi
-            echo "build failed (attempt ${i})."
-            if [ "$i" -lt 2 ]; then
-              sleep 10
-            fi
-          done
-          exit 1
+      - name: Build
+        run: npm run build
 
-      - name: Upload artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
