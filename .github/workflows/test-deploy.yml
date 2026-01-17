@@ -14,15 +14,23 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 18.x
           cache: 'npm'
 
       - name: Install dependencies (retry)
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 15
-          max_attempts: 3
-          command: npm ci
+        run: |
+          set -euo pipefail
+          for i in 1 2 3; do
+            echo "npm ci attempt ${i}/3"
+            if npm ci; then
+              exit 0
+            fi
+            echo "npm ci failed (attempt ${i})."
+            if [ "$i" -lt 3 ]; then
+              sleep $((i * 10))
+            fi
+          done
+          exit 1
 
       - name: Run lint
         run: npm run lint
@@ -31,10 +39,18 @@ jobs:
         run: npm run prettier
 
       - name: Build
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 15
-          max_attempts: 2
-          command: npm run build
+        run: |
+          set -euo pipefail
+          for i in 1 2; do
+            echo "npm run build attempt ${i}/2"
+            if npm run build; then
+              exit 0
+            fi
+            echo "build failed (attempt ${i})."
+            if [ "$i" -lt 2 ]; then
+              sleep 10
+            fi
+          done
+          exit 1
         env:
           CI: ''
